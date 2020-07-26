@@ -11,7 +11,16 @@ def graphic_loop(surface, game):
     for piece in game.pieces:
         piece.show(surface)
 
-    handel_moves(game)
+    if not game.is_finished():
+        if game.player1.__class__ == HumanPlayer or game.player2.__class__ == HumanPlayer:
+            game.handel_human_moves()
+        else:
+            global timer
+            if timer == 1:
+                game.handel_machine_moves()        
+                timer = 0
+    else:
+        print('The End.')
                
             
 def game_event_loop(game):
@@ -41,39 +50,7 @@ def game_event_loop(game):
             sys.exit()
 
 
-def handel_moves(game):
-    if game.player1.__class__ == HumanPlayer or  game.player2.__class__ == HumanPlayer:
-        if game.turn == game.player1.color:
-            if game.player1.__class__ == HumanPlayer:
-                game.player1.draw_pieces(game) 
-            else:
-                foo = False
-                # for piece in game.pieces:
-                #     if piece.click:
-                #         foo = True
-                if not foo:
-                    game.player1.do_move(game)            
-        
-        if game.turn == game.player2.color:
-            if game.player2.__class__ == HumanPlayer:
-                game.player2.draw_pieces(game)
-            else:
-                foo = False
-                # for piece in game.pieces:
-                #     if piece.click:
-                #         foo = True
-                if not foo:
-                    game.player2.do_move(game)
-                        
 
-    else:
-        global timer
-        if timer == 1:
-            if game.player1.color == game.turn:
-                game.player1.do_move(game)
-            else:
-                game.player2.do_move(game)
-            timer = 0
             
                     
 # game window size:

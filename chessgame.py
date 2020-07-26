@@ -49,6 +49,31 @@ class Game:
         
         return removed_piece
     
+    def is_finished(self):
+        return Rule.is_checkmate(self.board, self.pieces, 'b') or Rule.is_checkmate(self.board, self.pieces, 'w')
+
+    def handel_human_moves(self):
+        if self.turn == self.player1.color:
+            if self.player1.__class__ == player.HumanPlayer:
+                self.player1.draw_pieces(self) 
+            else:
+                self.player1.do_move(self)            
+        
+        if self.turn == self.player2.color:
+            if self.player2.__class__ == player.HumanPlayer:
+                self.player2.draw_pieces(self)
+            else:
+                self.player2.do_move(self)
+                        
+    def handel_machine_moves(self):
+        if self.player1.color == self.turn:
+            self.player1.do_move(self)
+        else:
+            self.player2.do_move(self)
+    
+
+
+
 class Rule:
     """Just to use as namespace."""
     
