@@ -15,6 +15,8 @@ class Player:
     def switch_turn(self):
         self.turn = not self.turn    
 
+    def __repr__(self):
+        return self.name
 
     @staticmethod
     def init_drawable_pieces(color, position, WIN_SIZE):
@@ -85,32 +87,18 @@ class MinMaxAbPlayer(Player):
     def __init__(self, name, color, position, WIN_SIZE):
         Player.__init__(self, name, color, position, WIN_SIZE)
         
-    def do_move(self, game, depth=2, i=20):
-        pieces_c = chessgame.Rule.drawable_pieces_as_piece(game.pieces)
-        situation = chessgame.Rule.check_situation(game.board, game.pieces, self.color)
-
+    def do_move(self, pieces, situation, depth=2, i=20):
         if situation == 'move':
-            _, (piece, move) = MinMaxAbPlayer.alpha_beta(pieces_c, depth, depth, self.color, self.color)
-            print("MinMax move: ", piece, move)
-            piece = piece.find_drawable_twin(game.pieces)
-            if not chessgame.Rule.is_move_allowed(pieces_c, piece, move):
-                self.do_move(game, i-1)
-                if i == 0:
-                    print('Could not found a MinMax move.')
-                    
-            else:
-                game.update(piece, move)
-                game.switch_turns()
-    
+            _, (piece, move) = MinMaxAbPlayer.alpha_beta(pieces, depth, depth, self.color, self.color)
+            return piece, move
+            
         elif situation == 'check':
-            piece, move = chessgame.Rule.random_escape_king(pieces_c, self.color)
+            piece, move = chessgame.Rule.random_escape_king(pieces, self.color)
             print("MinMax move:(checked. random escape.) ", piece, move)    
-            piece = piece.find_drawable_twin(game.pieces)
-            game.update(piece, move)
-            game.switch_turns()
-        
+            return piece, move
+
         elif situation == 'checkmate':
-            print(self.name, ' is checkmate!' )    
+            print(self.name, ' is checkmate!XXX' )    
         
     @staticmethod
     def alpha_beta(pieces, max_depth, depth, color, turn, a=float('-inf'), b=float('inf'), best=None): # call ex: 'b', 'b'
@@ -170,28 +158,16 @@ class RandomPlayer(Player):
     def __init__(self, name, color, position, WIN_SIZE):
         Player.__init__(self, name, color, position, WIN_SIZE)
         
-    def do_move(self, game, i=300):
-        pieces_c = chessgame.Rule.drawable_pieces_as_piece(game.pieces)
-        situation = chessgame.Rule.check_situation(game.board, game.pieces, self.color)
+    def do_move(self, pieces, situation):
+        board_c = board.Board()
+        board_c.place_pieces(pieces)
         if situation == 'move':
-            piece, move = chessgame.Rule.random_move(game.board, game.pieces, self.color)
-            # piece = piece.find_drawable_twin(game.pieces)
-            if not chessgame.Rule.is_move_allowed(pieces_c, piece, move):
-                self.do_move(game, i-1)
-                if i == 0:
-                    print('Could not found a random move.')
-                    return False
-            else:
-                game.update(piece, move)
-                game.switch_turns()
-              
+            piece, move = chessgame.Rule.random_move(board_c, pieces, self.color)
+            return piece, move      
         elif situation == 'check':
-            piece, move = chessgame.Rule.random_escape_king(pieces_c, self.color)    
+            piece, move = chessgame.Rule.random_escape_king(pieces, self.color)    
             print("Randon move:(checked. random escape.) ", piece, move)    
-            piece = piece.find_drawable_twin(game.pieces)
-            game.update(piece, move)
-            game.switch_turns()
-        
+            return piece, move
         elif situation == 'checkmate':
             print(self.name, ' is checkmate!' )    
         

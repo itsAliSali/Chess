@@ -57,21 +57,40 @@ class Game:
             if self.player1.__class__ == player.HumanPlayer:
                 self.player1.draw_pieces(self) 
             else:
-                self.player1.do_move(self)            
+                self.handel_machine_moves()
         
         if self.turn == self.player2.color:
             if self.player2.__class__ == player.HumanPlayer:
                 self.player2.draw_pieces(self)
             else:
-                self.player2.do_move(self)
+                self.handel_machine_moves()
                         
-    def handel_machine_moves(self):
+    def handel_machine_moves(self, i=20):
+        current_player = None
         if self.player1.color == self.turn:
-            self.player1.do_move(self)
+            current_player = self.player1
         else:
-            self.player2.do_move(self)
-    
+            current_player = self.player2
 
+        situation = Rule.check_situation(self.board, self.pieces, current_player.color)
+
+        if situation == 'checkmate':
+            print(current_player, ' is checkmate!')
+        else:
+            pieces_c = Rule.drawable_pieces_as_piece(self.pieces)
+            
+            piece, move = current_player.do_move(pieces_c, situation)    
+            
+            print(current_player, " move: ", piece, move)
+            piece = piece.find_drawable_twin(self.pieces)
+            if not Rule.is_move_allowed(pieces_c, piece, move):
+                if i == 0:
+                    print(current_player, 'could not made a move')
+                else:
+                    self.handel_machine_moves(i-1)
+            else:
+                self.update(piece, move)
+                self.switch_turns()
 
 
 class Rule:
