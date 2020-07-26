@@ -43,9 +43,13 @@ class Player:
         pieces.append(DrawableBishop((2, royal_pos), color, WIN_SIZE, rotate))
         pieces.append(DrawableBishop((5, royal_pos), color, WIN_SIZE, rotate))
         
-        pieces.append(DrawableKing((4, royal_pos), color, WIN_SIZE, rotate))
-        pieces.append(DrawableQueen((3, royal_pos), color, WIN_SIZE, rotate))
-                
+        if (position == 'up' and color == 'b') or (position == 'down' and color == 'w'):
+            pieces.append(DrawableKing((3, royal_pos), color, WIN_SIZE, rotate))
+            pieces.append(DrawableQueen((4, royal_pos), color, WIN_SIZE, rotate))
+        else:
+            pieces.append(DrawableKing((4, royal_pos), color, WIN_SIZE, rotate))
+            pieces.append(DrawableQueen((3, royal_pos), color, WIN_SIZE, rotate))
+                    
         return pieces    
                         
 class HumanPlayer(Player):
