@@ -83,7 +83,7 @@ if __name__ == "__main__":
     # os.chdir(r'/home/itsme/workspace/python/chess/')
     
     pg.init()
-    pg.display.set_caption('A chess')
+    pg.display.set_caption('A Chess')
     Screen = pg.display.set_mode(WINDOW_SIZE)
     
     # timer is used for automated palyers (ie. RandomPlayer and MinMaxPlayer)
